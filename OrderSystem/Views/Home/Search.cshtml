@@ -1,0 +1,38 @@
+﻿@model IEnumerable<OrderSystem.Models.OrderViewModel>
+@{
+    ViewBag.Title = "Search";
+}
+
+<br />
+<div>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.OrderID)</th>
+                <th style="display:none">@Html.DisplayNameFor(m => m.CustomerID)</th>
+                <th>@Html.DisplayNameFor(m => m.CompanyName)</th>
+                <th style="display:none">@Html.DisplayNameFor(m => m.EmployeeID)</th>
+                <th>@Html.DisplayNameFor(m => m.EmployeeName)</th>
+                <th>@Html.DisplayNameFor(m => m.OrderDate)</th>
+                <th>@Html.DisplayNameFor(m => m.ShippedDate)</th>
+                <th>@Html.DisplayNameFor(m => m.RequiredDate)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(x => m.OrderID)</td>
+                    <td style="display:none">@Html.DisplayFor(x => m.CustomerID)</td>
+                    <td>@Html.DisplayFor(x => m.CompanyName)</td>
+                    <td style="display:none">@Html.DisplayFor(x => m.EmployeeID)</td>
+                    <td>@Html.DisplayFor(x => m.EmployeeName)</td>
+                    <td>@Html.DisplayFor(x => m.OrderDate)</td>
+                    <td>@Html.DisplayFor(x => m.ShippedDate)</td>
+                    <td>@Html.DisplayFor(x => m.RequiredDate)</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
