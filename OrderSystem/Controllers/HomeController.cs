@@ -41,6 +41,44 @@ namespace OrderSystem.Controllers
             }                
         }
 
+        public ActionResult Creat()
+        {
+            using (NorthwindEntities db = new NorthwindEntities())
+            {
+                //客戶DropDownList                
+                var Customerlist = db.Customers.ToList().Distinct();
+                List<SelectListItem> CustomerSelectItemList = new List<SelectListItem>();
+                foreach (var item in Customerlist)
+                {
+                    CustomerSelectItemList.Add(new SelectListItem()
+                    {
+                        Text = item.CompanyName,
+                        Value = item.CustomerID,
+                        Selected = false
+                    });
+                }
+                CustomerSelectItemList.FirstOrDefault().Selected = true;
+                ViewBag.CustomerSelectItem = CustomerSelectItemList;
+
+                //員工編號DropDownList
+                var Employeelist = db.Employees.ToList().Distinct();
+                List<SelectListItem> EmployeeSelectItemList = new List<SelectListItem>();
+                foreach (var item in Employeelist)
+                {
+                    EmployeeSelectItemList.Add(new SelectListItem()
+                    {
+                        Text = item.EmployeeID.ToString(),
+                        Value = item.EmployeeID.ToString(),
+                        Selected = false
+                    });
+                }
+                EmployeeSelectItemList.FirstOrDefault().Selected = true;
+                ViewBag.EmployeeSelectItem = EmployeeSelectItemList;
+
+                return View();
+            }
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

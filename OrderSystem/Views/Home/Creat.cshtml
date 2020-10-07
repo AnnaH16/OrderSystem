@@ -1,0 +1,67 @@
+﻿@model IEnumerable<OrderSystem.Models.OrderViewModel>
+@{
+    ViewBag.Title = "Creat";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h3>新增訂單</h3>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.CompanyName)
+            </div>
+            <div class="col-lg-3">
+                @Html.DropDownList("CustomerSelector", (IEnumerable<SelectListItem>)ViewBag.CustomerSelectItem, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.EmployeeID)
+            </div>
+            <div class="col-lg-3">
+                @Html.DropDownList("EmployeeSelector", (IEnumerable<SelectListItem>)ViewBag.EmployeeSelectItem, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.OrderDate)
+            </div>
+            <div class="col-lg-3">
+                
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.ShippedDate)
+            </div>
+            <div class="col-lg-3">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.RequiredDate)
+            </div>
+            <div class="col-lg-3">
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-2">
+                <input type="submit" value="新增" class="btn btn-info">
+                <input type="submit" value="取消" class="btn btn-default">
+            </div>
+            <div class="col-lg-1">
+
+            </div>
+        </div>
+
+    </div>
+}
