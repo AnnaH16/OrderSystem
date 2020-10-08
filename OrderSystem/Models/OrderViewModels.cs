@@ -7,15 +7,14 @@ using System.ComponentModel.DataAnnotations;
 namespace OrderSystem.Models
 {
     public class OrderViewModel
-    {
-        
+    {        
         [Display(Name ="訂單編號")]
         public int OrderID { get; set; }
 
+        [Required]
         [Display(Name = "客戶編號")]
         public string CustomerID { get; set; }
-
-        [Required]
+        
         [Display(Name = "客戶")]
         public string CompanyName { get; set; }        
 
@@ -25,8 +24,7 @@ namespace OrderSystem.Models
         public string LastName { get; set; }
 
         public string FirstName { get; set; }
-
-        [Required]
+                
         [Display(Name = "員工")]
         public string EmployeeName
         {
@@ -35,18 +33,22 @@ namespace OrderSystem.Models
                 return LastName + " " + FirstName;
             }
         }
-
-        [Required(ErrorMessage = "訂購日期為必填")]
+        
         [Display(Name = "訂購日期")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? OrderDate { get; set; }
-
-        [Required(ErrorMessage ="抵達日期為必填")]
+        
         [Display(Name = "抵達日期")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? RequiredDate { get; set; }
-        
+
+    }
+
+    public class EditOrderViewModel : OrderViewModel
+    {
+        [Required]
+        public int OrderID { get; set; }
     }
 }

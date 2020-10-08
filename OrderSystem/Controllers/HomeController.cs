@@ -51,6 +51,89 @@ namespace OrderSystem.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Creat(OrderViewModel OrderVM)
+        {
+            if (ModelState.IsValid)
+            {
+                using (NorthwindEntities db = new NorthwindEntities())
+                {
+                    //取DB裡最大OrderID
+                    int MaxOrderID = db.Orders.Select(x => x.OrderID).Max();
+
+                    Orders orders = AutoMapper.Mapper.Map<Orders>(OrderVM);
+                    orders.OrderID = MaxOrderID + 1;
+
+                    db.Orders.Add(orders);
+                    db.SaveChanges();
+
+                    TempData["message"] = "新增成功";
+                    return RedirectToAction("Search");
+                }
+            }
+
+            //未通過，再次返回顯示Form表單
+            TempData["message"] = "新增失敗";
+            return RedirectToAction("Creat");
+        }
+
+        public ActionResult Edit(int OrderID, string CustomerID, int? EmployeeID, DateTime? OrderDate, DateTime? RequiredDate)
+        {
+            //DropDownList
+            ViewBag.CustomerID = CustomerSelectItemList(CustomerID);
+
+            EditOrderViewModel OrderVM = new EditOrderViewModel();
+            OrderVM.OrderID = OrderID;
+            OrderVM.EmployeeID = EmployeeID;
+            OrderVM.OrderDate = OrderDate.HasValue ? OrderDate.Value : DateTime.Today;
+            OrderVM.RequiredDate = RequiredDate.HasValue ? RequiredDate.Value : DateTime.Today;
+
+            return View(OrderVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "OrderID, CustomerID, OrderDate, RequiredDate")] EditOrderViewModel EditOrderVM)
+        {
+            if (ModelState.IsValid)
+            {
+                using (NorthwindEntities db = new NorthwindEntities())
+                {
+                    Orders source = db.Orders.Find(EditOrderVM.OrderID);
+                    if(source == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    source.CustomerID = EditOrderVM.CustomerID;
+                    source.OrderDate = EditOrderVM.OrderDate;
+                    source.RequiredDate = EditOrderVM.RequiredDate;
+                    db.SaveChanges();
+
+                    TempData["message"] = "修改成功";
+                    return RedirectToAction("Search");
+                }
+            }
+
+            //未通過，再次返回顯示Form表單
+            TempData["message"] = "修改失敗";
+            return RedirectToAction("Edit");
+        }
+
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+
         /// <summary>
         /// 客戶DropDownList
         /// </summary>
@@ -72,21 +155,21 @@ namespace OrderSystem.Controllers
                 }
 
                 //設定預選值
-                if(string.IsNullOrWhiteSpace(CustomerID))
+                if (string.IsNullOrWhiteSpace(CustomerID))
                 {
                     CustomerSelectItemList.FirstOrDefault().Selected = true;
                 }
                 else
                 {
                     var selectItem = CustomerSelectItemList.Where(x => x.Value == CustomerID).Count();
-                    if(selectItem > 0)
+                    if (selectItem > 0)
                     {
                         CustomerSelectItemList.Where(x => x.Value == CustomerID).FirstOrDefault().Selected = true;
                     }
                     else
                     {
                         CustomerSelectItemList.FirstOrDefault().Selected = true;
-                    }                    
+                    }
                 }
 
                 return CustomerSelectItemList;
@@ -116,61 +199,6 @@ namespace OrderSystem.Controllers
                 EmployeeSelectItemList.FirstOrDefault().Selected = true;
                 return EmployeeSelectItemList;
             }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Creat(OrderViewModel OrderVM)
-        {
-            if (ModelState.IsValid)
-            {
-                using (NorthwindEntities db = new NorthwindEntities())
-                {
-                    int MaxOrderID = db.Orders.Select(x => x.OrderID).Max();
-
-                    Orders orders = AutoMapper.Mapper.Map<Orders>(OrderVM);
-                    orders.OrderID = MaxOrderID + 1;
-
-                    db.Orders.Add(orders);
-                    db.SaveChanges();
-                }
-
-                TempData["message"] = "新增成功";
-                return RedirectToAction("Search");
-
-            }
-
-            //未通過，再次返回顯示Form表單
-            TempData["message"] = "新增失敗";
-            return RedirectToAction("Creat");
-        }
-
-        public ActionResult Edit(int OrderID, string CustomerID, int? EmployeeID, DateTime? OrderDate, DateTime? RequiredDate)
-        {
-            //DropDownList
-            ViewBag.CustomerID = CustomerSelectItemList(CustomerID);
-            
-            OrderViewModel OrderVM = new OrderViewModel();
-            OrderVM.OrderID = OrderID;
-            OrderVM.EmployeeID = EmployeeID;
-            OrderVM.OrderDate = OrderDate.HasValue ? OrderDate.Value : DateTime.Today;
-            OrderVM.RequiredDate = RequiredDate.HasValue ? RequiredDate.Value : DateTime.Today;
-
-            return View(OrderVM);
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
     }
 }

@@ -1,4 +1,12 @@
-﻿@model OrderSystem.Models.OrderViewModel
+﻿@model OrderSystem.Models.EditOrderViewModel
+
+@if (TempData["message"] != null)
+{
+    <script type="text/javascript">
+        var message = @Html.Raw(Json.Encode(TempData["message"]));
+        alert(message);
+    </script>
+}
 
 @using (Html.BeginForm("Edit", "Home", FormMethod.Post, new { name = "EditForm" }))
 {
@@ -6,10 +14,10 @@
 
     <div class="form-horizontal">
 
-        <h3>編輯訂單</h3>
+        <h3>修改訂單</h3>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
+        
         <div class="form-group">
             <div class="col-lg-1">
                 <label style="color:red;">*為必填</label>
@@ -22,14 +30,15 @@
             </div>
             <div class="col-lg-3">                
                 @Html.Label(Model.OrderID.ToString())
-            </div>
+                @Html.HiddenFor(m => m.OrderID)
+            </div>            
         </div>        
         <div class="form-group">
             <div class="col-lg-1">                
                 @Html.DisplayNameFor(m => m.EmployeeID)
             </div>
-            <div class="col-lg-3">
-                @Html.Label(Model.EmployeeID.HasValue ? Model.EmployeeID.Value.ToString() : "")                
+            <div class="col-lg-3">                
+                @Html.Label(Model.EmployeeID.HasValue ? Model.EmployeeID.Value.ToString() : "")            
             </div>
         </div>
         <div class="form-group">
