@@ -163,6 +163,5 @@ D:\程式\OrderSystem\OrderSystem\bin\Microsoft.Owin.Security.OAuth.xml
 D:\程式\OrderSystem\OrderSystem\bin\Microsoft.Owin.Security.Google.xml
 D:\程式\OrderSystem\OrderSystem\bin\Microsoft.Owin.Security.Twitter.xml
 D:\程式\OrderSystem\OrderSystem\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-D:\程式\OrderSystem\OrderSystem\obj\Debug\OrderSystem.csprojResolveAssemblyReference.cache
 D:\程式\OrderSystem\OrderSystem\obj\Debug\OrderSystem.dll
 D:\程式\OrderSystem\OrderSystem\obj\Debug\OrderSystem.pdb

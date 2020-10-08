@@ -24,7 +24,10 @@ namespace OrderSystem.Models
         public string LastName { get; set; }
 
         public string FirstName { get; set; }
-                
+
+        [Display(Name = "員工")]
+        public string EmployeeNameCopy { get; set; }
+
         [Display(Name = "員工")]
         public string EmployeeName
         {

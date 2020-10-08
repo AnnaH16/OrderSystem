@@ -1,0 +1,66 @@
+﻿@model OrderSystem.Models.OrderViewModel
+
+@if (TempData["message"] != null)
+{
+    <script type="text/javascript">
+        var message = @Html.Raw(Json.Encode(TempData["message"]));
+        alert(message);
+    </script>
+}
+
+@using (Html.BeginForm("Delete", "Home", FormMethod.Post, new { name = "DeleteForm" }))
+{
+    <div class="form-horizontal">
+        <h3>請確認資料，確定刪除嗎?</h3>
+        <hr /> 
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.OrderID)
+            </div>
+            <div class="col-lg-3">
+                @Html.Label(Model.OrderID.ToString())
+                @Html.HiddenFor(m => m.OrderID)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.CompanyName)
+            </div>
+            <div class="col-lg-3">
+                @Html.Label(Model.CompanyName)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.EmployeeNameCopy)
+            </div>
+            <div class="col-lg-3">
+                @Html.Label(Model.EmployeeNameCopy)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.OrderDate)
+            </div>
+            <div class="col-lg-3">
+                @Html.Label(Model.OrderDate.Value.ToString("yyyy-MM-dd"))
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-1">
+                @Html.DisplayNameFor(m => m.RequiredDate)
+            </div>
+            <div class="col-lg-3">
+                @Html.Label(Model.RequiredDate.Value.ToString("yyyy-MM-dd"))
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-2">
+                <input type="submit" value="確定刪除" class="btn btn-info">
+            </div>
+        </div>
+
+    </div>
+    
+}

@@ -8,9 +8,9 @@ using OrderSystem.Models;
 namespace OrderSystem.Controllers
 {
     public class HomeController : Controller
-    {        
+    {
         public ActionResult Index()
-        {            
+        {
             return View();
         }
 
@@ -37,7 +37,7 @@ namespace OrderSystem.Controllers
                                                }).ToList();
 
                 return View(source);
-            }                
+            }
         }
 
         public ActionResult Creat()
@@ -45,7 +45,7 @@ namespace OrderSystem.Controllers
             using (NorthwindEntities db = new NorthwindEntities())
             {
                 //DropDownList
-                ViewBag.CustomerID = CustomerSelectItemList("");                           
+                ViewBag.CustomerID = CustomerSelectItemList("");
                 ViewBag.EmployeeID = EmployeeSelectItemList();
                 return View();
             }
@@ -101,7 +101,7 @@ namespace OrderSystem.Controllers
                 using (NorthwindEntities db = new NorthwindEntities())
                 {
                     Orders source = db.Orders.Find(EditOrderVM.OrderID);
-                    if(source == null)
+                    if (source == null)
                     {
                         return HttpNotFound();
                     }
@@ -118,6 +118,40 @@ namespace OrderSystem.Controllers
             //未通過，再次返回顯示Form表單
             TempData["message"] = "修改失敗";
             return RedirectToAction("Edit");
+        }
+
+        public ActionResult Delete(int OrderID, string CompanyName, string EmployeeName, DateTime? OrderDate, DateTime? RequiredDate)
+        {
+            OrderViewModel OrderVM = new OrderViewModel();
+            OrderVM.OrderID = OrderID;
+            OrderVM.CompanyName = CompanyName;
+            OrderVM.EmployeeNameCopy = EmployeeName;
+            OrderVM.OrderDate = OrderDate;
+            OrderVM.RequiredDate = RequiredDate;
+
+            return View(OrderVM);
+        }
+
+
+        [HttpPost]
+        public ActionResult Delete([Bind(Include = "OrderID")] int OrderID)
+        {
+            using (NorthwindEntities db = new NorthwindEntities())
+            {
+                Orders deleteItem = db.Orders.Find(OrderID);
+                if (deleteItem != null)
+                {
+                    db.Orders.Remove(deleteItem);
+                    db.SaveChanges();
+
+                    TempData["message"] = "刪除成功";                 
+                }
+                else
+                {
+                    TempData["message"] = "資料有誤，刪除失敗";                    
+                }
+                return RedirectToAction("Search");
+            }
         }
 
         public ActionResult About()
