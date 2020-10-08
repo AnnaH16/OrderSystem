@@ -4,51 +4,31 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using OrderSystem.Models;
+using OrderSystem.Service;
 
 namespace OrderSystem.Controllers
 {
     public class HomeController : Controller
     {
+        OrderBaseService OrderService = new OrderBaseService();
+
         public ActionResult Index()
         {
             return View();
         }
 
         public ActionResult Search()
-        {
-            List<OrderViewModel> OrderVM = new List<OrderViewModel>();
-            using (NorthwindEntities db = new NorthwindEntities())
-            {
-                List<OrderViewModel> source = (from o in db.Orders
-                                               join c in db.Customers on o.CustomerID equals c.CustomerID into oc
-                                               from c in oc.DefaultIfEmpty()
-                                               join e in db.Employees on o.EmployeeID equals e.EmployeeID into oe
-                                               from e in oe.DefaultIfEmpty()
-                                               select new OrderViewModel
-                                               {
-                                                   OrderID = o.OrderID,
-                                                   CustomerID = o.CustomerID,
-                                                   CompanyName = c.CompanyName,
-                                                   EmployeeID = o.EmployeeID,
-                                                   LastName = e.LastName,
-                                                   FirstName = e.FirstName,
-                                                   OrderDate = o.OrderDate,
-                                                   RequiredDate = o.RequiredDate
-                                               }).ToList();
-
-                return View(source);
-            }
+        {            
+            List<OrderViewModel> source = OrderService.getOrderList();
+            return View(source);            
         }
 
         public ActionResult Creat()
         {
-            using (NorthwindEntities db = new NorthwindEntities())
-            {
-                //DropDownList
-                ViewBag.CustomerID = CustomerSelectItemList("");
-                ViewBag.EmployeeID = EmployeeSelectItemList();
-                return View();
-            }
+            //DropDownList
+            ViewBag.CustomerID = CustomerSelectItemList("");
+            ViewBag.EmployeeID = EmployeeSelectItemList();
+            return View();            
         }
 
         [HttpPost]
@@ -57,19 +37,15 @@ namespace OrderSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (NorthwindEntities db = new NorthwindEntities())
+                if (OrderService.addtOrder(OrderVM))
                 {
-                    //取DB裡最大OrderID
-                    int MaxOrderID = db.Orders.Select(x => x.OrderID).Max();
-
-                    Orders orders = AutoMapper.Mapper.Map<Orders>(OrderVM);
-                    orders.OrderID = MaxOrderID + 1;
-
-                    db.Orders.Add(orders);
-                    db.SaveChanges();
-
                     TempData["message"] = "新增成功";
                     return RedirectToAction("Search");
+                }
+                else
+                {
+                    TempData["message"] = "新增失敗";
+                    return RedirectToAction("Creat");
                 }
             }
 
@@ -98,20 +74,15 @@ namespace OrderSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (NorthwindEntities db = new NorthwindEntities())
+                if (OrderService.editOrder(EditOrderVM))
                 {
-                    Orders source = db.Orders.Find(EditOrderVM.OrderID);
-                    if (source == null)
-                    {
-                        return HttpNotFound();
-                    }
-                    source.CustomerID = EditOrderVM.CustomerID;
-                    source.OrderDate = EditOrderVM.OrderDate;
-                    source.RequiredDate = EditOrderVM.RequiredDate;
-                    db.SaveChanges();
-
                     TempData["message"] = "修改成功";
                     return RedirectToAction("Search");
+                }
+                else
+                {
+                    TempData["message"] = "修改失敗";
+                    return RedirectToAction("Edit");
                 }
             }
 
@@ -136,42 +107,21 @@ namespace OrderSystem.Controllers
         [HttpPost]
         public ActionResult Delete([Bind(Include = "OrderID")] int OrderID)
         {
-            using (NorthwindEntities db = new NorthwindEntities())
+            if (OrderService.deleteOrder(OrderID))
             {
-                Orders deleteItem = db.Orders.Find(OrderID);
-                if (deleteItem != null)
-                {
-                    db.Orders.Remove(deleteItem);
-                    db.SaveChanges();
-
-                    TempData["message"] = "刪除成功";                 
-                }
-                else
-                {
-                    TempData["message"] = "資料有誤，刪除失敗";                    
-                }
-                return RedirectToAction("Search");
+                TempData["message"] = "刪除成功";
             }
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            else
+            {
+                TempData["message"] = "資料有誤，刪除失敗";
+            }
+            return RedirectToAction("Search");
         }
 
         /// <summary>
         /// 客戶DropDownList
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List<SelectListItem></returns>
         private List<SelectListItem> CustomerSelectItemList(string CustomerID)
         {
             using (NorthwindEntities db = new NorthwindEntities())
@@ -213,7 +163,7 @@ namespace OrderSystem.Controllers
         /// <summary>
         /// 員工DropDownList 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List<SelectListItem></returns>
         private List<SelectListItem> EmployeeSelectItemList()
         {
             using (NorthwindEntities db = new NorthwindEntities())
@@ -234,5 +184,24 @@ namespace OrderSystem.Controllers
                 return EmployeeSelectItemList;
             }
         }
+
+
+
+
+        //public ActionResult About()
+        //{
+        //    ViewBag.Message = "Your application description page.";
+
+        //    return View();
+        //}
+
+        //public ActionResult Contact()
+        //{
+        //    ViewBag.Message = "Your contact page.";
+
+        //    return View();
+        //}
+
+
     }
 }

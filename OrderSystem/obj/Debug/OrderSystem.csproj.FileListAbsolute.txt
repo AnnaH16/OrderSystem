@@ -165,3 +165,4 @@ D:\程式\OrderSystem\OrderSystem\bin\Microsoft.Owin.Security.Twitter.xml
 D:\程式\OrderSystem\OrderSystem\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\程式\OrderSystem\OrderSystem\obj\Debug\OrderSystem.dll
 D:\程式\OrderSystem\OrderSystem\obj\Debug\OrderSystem.pdb
+D:\程式\OrderSystem\OrderSystem\obj\Debug\OrderSystem.csprojResolveAssemblyReference.cache
