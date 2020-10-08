@@ -33,7 +33,6 @@ namespace OrderSystem.Controllers
                                                    LastName = e.LastName,
                                                    FirstName = e.FirstName,
                                                    OrderDate = o.OrderDate,
-                                                   ShippedDate = o.ShippedDate,
                                                    RequiredDate = o.RequiredDate
                                                }).ToList();
 
@@ -45,7 +44,21 @@ namespace OrderSystem.Controllers
         {
             using (NorthwindEntities db = new NorthwindEntities())
             {
-                //客戶DropDownList                
+                //DropDownList
+                ViewBag.CustomerID = CustomerSelectItemList();                           
+                ViewBag.EmployeeID = EmployeeSelectItemList();
+                return View();
+            }
+        }
+
+        /// <summary>
+        /// 客戶DropDownList
+        /// </summary>
+        /// <returns></returns>
+        private List<SelectListItem> CustomerSelectItemList()
+        {
+            using (NorthwindEntities db = new NorthwindEntities())
+            {
                 var Customerlist = db.Customers.ToList().Distinct();
                 List<SelectListItem> CustomerSelectItemList = new List<SelectListItem>();
                 foreach (var item in Customerlist)
@@ -58,25 +71,59 @@ namespace OrderSystem.Controllers
                     });
                 }
                 CustomerSelectItemList.FirstOrDefault().Selected = true;
-                ViewBag.CustomerSelectItem = CustomerSelectItemList;
+                return CustomerSelectItemList;
+            }
+        }
 
-                //員工編號DropDownList
+        /// <summary>
+        /// 員工DropDownList 
+        /// </summary>
+        /// <returns></returns>
+        private List<SelectListItem> EmployeeSelectItemList()
+        {
+            using (NorthwindEntities db = new NorthwindEntities())
+            {
                 var Employeelist = db.Employees.ToList().Distinct();
                 List<SelectListItem> EmployeeSelectItemList = new List<SelectListItem>();
                 foreach (var item in Employeelist)
                 {
                     EmployeeSelectItemList.Add(new SelectListItem()
                     {
-                        Text = item.EmployeeID.ToString(),
+                        Text = item.FirstName.ToString() + " " + item.LastName.ToString(),
                         Value = item.EmployeeID.ToString(),
                         Selected = false
                     });
                 }
                 EmployeeSelectItemList.FirstOrDefault().Selected = true;
-                ViewBag.EmployeeSelectItem = EmployeeSelectItemList;
-
-                return View();
+                return EmployeeSelectItemList;
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Creat(OrderViewModel OrderVM)
+        {
+            if (ModelState.IsValid)
+            {
+                using (NorthwindEntities db = new NorthwindEntities())
+                {
+                    int MaxOrderID = db.Orders.Select(x => x.OrderID).Max();
+
+                    Orders orders = AutoMapper.Mapper.Map<Orders>(OrderVM);
+                    orders.OrderID = MaxOrderID + 1;
+
+                    db.Orders.Add(orders);
+                    db.SaveChanges();
+                }
+
+                TempData["message"] = "新增成功";
+                return RedirectToAction("Search");
+
+            }
+
+            //未通過，再次返回顯示Form表單
+            TempData["message"] = "新增失敗";
+            return RedirectToAction("Creat");
         }
 
         public ActionResult About()

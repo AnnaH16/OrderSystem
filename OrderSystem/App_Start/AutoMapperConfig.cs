@@ -19,8 +19,7 @@ namespace OrderSystem.App_Start
         public AutoMapperConfig()
         {
             CreateMap<Orders, OrderViewModel>();
-            //CreateMap<OrderViewModel, Orders>();
-            //...
+            CreateMap<OrderViewModel, Orders>();            
         }
 
     }

@@ -2,6 +2,15 @@
 @{
     ViewBag.Title = "Search";
 }
+
+@if (TempData["message"] != null)
+{
+    <script type="text/javascript">
+        var message = @Html.Raw(Json.Encode(TempData["message"]));
+        alert(message);
+    </script>
+}
+
 <br />
 <div>
     @Html.ActionLink("新增", "Creat", null, new { @class = "btn btn-primary" })
@@ -17,8 +26,7 @@
                 <th style="display:none">@Html.DisplayNameFor(m => m.EmployeeID)</th>
                 <th>@Html.DisplayNameFor(m => m.EmployeeName)</th>
                 <th>@Html.DisplayNameFor(m => m.OrderDate)</th>
-                <th>@Html.DisplayNameFor(m => m.ShippedDate)</th>
-                <th>@Html.DisplayNameFor(m => m.RequiredDate)</th>
+                <th>@Html.DisplayNameFor(m => m.RequiredDate)</th>                
             </tr>
         </thead>
         <tbody>
@@ -31,8 +39,7 @@
                     <td style="display:none">@Html.DisplayFor(x => m.EmployeeID)</td>
                     <td>@Html.DisplayFor(x => m.EmployeeName)</td>
                     <td>@Html.DisplayFor(x => m.OrderDate)</td>
-                    <td>@Html.DisplayFor(x => m.ShippedDate)</td>
-                    <td>@Html.DisplayFor(x => m.RequiredDate)</td>
+                    <td>@Html.DisplayFor(x => m.RequiredDate)</td>                    
                 </tr>
             }
 
