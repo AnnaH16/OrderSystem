@@ -1,20 +1,13 @@
 ﻿@model OrderSystem.Models.OrderViewModel
 
-@if (TempData["message"] != null)
-{
-    <script type="text/javascript">
-        var message = @Html.Raw(Json.Encode(TempData["message"]));
-        alert(message);
-    </script>
-}
-
-@using (Html.BeginForm("Creat", "Home", FormMethod.Post, new { name = "CreatForm" }))
+@using (Html.BeginForm("Edit", "Home", FormMethod.Post, new { name = "EditForm" }))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h3>新增訂單</h3>
-        <hr />        
+
+        <h3>編輯訂單</h3>
+        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
@@ -22,22 +15,30 @@
                 <label style="color:red;">*為必填</label>
             </div>
         </div>
+
         <div class="form-group">
             <div class="col-lg-1">
-                <label style="color:red;">*</label>
-                @Html.DisplayNameFor(m => m.CompanyName)
+                @Html.DisplayNameFor(m => m.OrderID)
             </div>
             <div class="col-lg-3">                
-                @Html.DropDownList("CustomerID", (IEnumerable<SelectListItem>)ViewBag.CustomerID, htmlAttributes: new { @class = "form-control" })                
+                @Html.Label(Model.OrderID.ToString())
+            </div>
+        </div>        
+        <div class="form-group">
+            <div class="col-lg-1">                
+                @Html.DisplayNameFor(m => m.EmployeeID)
+            </div>
+            <div class="col-lg-3">
+                @Html.Label(Model.EmployeeID.HasValue ? Model.EmployeeID.Value.ToString() : "")                
             </div>
         </div>
         <div class="form-group">
             <div class="col-lg-1">
                 <label style="color:red;">*</label>
-                @Html.DisplayNameFor(m => m.EmployeeName)
+                @Html.DisplayNameFor(m => m.CompanyName)
             </div>
             <div class="col-lg-3">
-                @Html.DropDownList("EmployeeID", (IEnumerable<SelectListItem>)ViewBag.EmployeeID, htmlAttributes: new { @class = "form-control"})                                         
+                @Html.DropDownList("CustomerID", (IEnumerable<SelectListItem>)ViewBag.CustomerID, htmlAttributes: new { @class = "form-control" })
             </div>
         </div>
         <div class="form-group">
@@ -45,8 +46,8 @@
                 <label style="color:red;">*</label>
                 @Html.DisplayNameFor(m => m.OrderDate)
             </div>
-            <div class="col-lg-3">
-                <input type="date" class="form-control" name="OrderDate">                
+            <div class="col-lg-3">                
+                <input type="date" class="form-control" name="OrderDate" value=@Model.OrderDate.Value.ToString("yyyy-MM-dd")>
             </div>
         </div>
         <div class="form-group">
@@ -55,13 +56,13 @@
                 @Html.DisplayNameFor(m => m.RequiredDate)
             </div>
             <div class="col-lg-3">
-                <input type="date" class="form-control" name="RequiredDate">
+                <input type="date" class="form-control" name="RequiredDate" value= @Model.RequiredDate.Value.ToString("yyyy-MM-dd")>
             </div>
-        </div>        
+        </div>
 
         <div class="form-group">
             <div class="col-lg-2">
-                <input type="submit" value="新增" class="btn btn-info">
+                <input type="submit" value="儲存" class="btn btn-info">
             </div>
             <div class="col-lg-1">
 

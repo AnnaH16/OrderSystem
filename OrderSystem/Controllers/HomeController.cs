@@ -45,7 +45,7 @@ namespace OrderSystem.Controllers
             using (NorthwindEntities db = new NorthwindEntities())
             {
                 //DropDownList
-                ViewBag.CustomerID = CustomerSelectItemList();                           
+                ViewBag.CustomerID = CustomerSelectItemList("");                           
                 ViewBag.EmployeeID = EmployeeSelectItemList();
                 return View();
             }
@@ -55,7 +55,7 @@ namespace OrderSystem.Controllers
         /// 客戶DropDownList
         /// </summary>
         /// <returns></returns>
-        private List<SelectListItem> CustomerSelectItemList()
+        private List<SelectListItem> CustomerSelectItemList(string CustomerID)
         {
             using (NorthwindEntities db = new NorthwindEntities())
             {
@@ -70,7 +70,25 @@ namespace OrderSystem.Controllers
                         Selected = false
                     });
                 }
-                CustomerSelectItemList.FirstOrDefault().Selected = true;
+
+                //設定預選值
+                if(string.IsNullOrWhiteSpace(CustomerID))
+                {
+                    CustomerSelectItemList.FirstOrDefault().Selected = true;
+                }
+                else
+                {
+                    var selectItem = CustomerSelectItemList.Where(x => x.Value == CustomerID).Count();
+                    if(selectItem > 0)
+                    {
+                        CustomerSelectItemList.Where(x => x.Value == CustomerID).FirstOrDefault().Selected = true;
+                    }
+                    else
+                    {
+                        CustomerSelectItemList.FirstOrDefault().Selected = true;
+                    }                    
+                }
+
                 return CustomerSelectItemList;
             }
         }
@@ -94,6 +112,7 @@ namespace OrderSystem.Controllers
                         Selected = false
                     });
                 }
+
                 EmployeeSelectItemList.FirstOrDefault().Selected = true;
                 return EmployeeSelectItemList;
             }
@@ -124,6 +143,20 @@ namespace OrderSystem.Controllers
             //未通過，再次返回顯示Form表單
             TempData["message"] = "新增失敗";
             return RedirectToAction("Creat");
+        }
+
+        public ActionResult Edit(int OrderID, string CustomerID, int? EmployeeID, DateTime? OrderDate, DateTime? RequiredDate)
+        {
+            //DropDownList
+            ViewBag.CustomerID = CustomerSelectItemList(CustomerID);
+            
+            OrderViewModel OrderVM = new OrderViewModel();
+            OrderVM.OrderID = OrderID;
+            OrderVM.EmployeeID = EmployeeID;
+            OrderVM.OrderDate = OrderDate.HasValue ? OrderDate.Value : DateTime.Today;
+            OrderVM.RequiredDate = RequiredDate.HasValue ? RequiredDate.Value : DateTime.Today;
+
+            return View(OrderVM);
         }
 
         public ActionResult About()

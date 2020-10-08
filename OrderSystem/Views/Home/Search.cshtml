@@ -1,7 +1,4 @@
 ﻿@model IEnumerable<OrderSystem.Models.OrderViewModel>
-@{
-    ViewBag.Title = "Search";
-}
 
 @if (TempData["message"] != null)
 {
@@ -26,7 +23,8 @@
                 <th style="display:none">@Html.DisplayNameFor(m => m.EmployeeID)</th>
                 <th>@Html.DisplayNameFor(m => m.EmployeeName)</th>
                 <th>@Html.DisplayNameFor(m => m.OrderDate)</th>
-                <th>@Html.DisplayNameFor(m => m.RequiredDate)</th>                
+                <th>@Html.DisplayNameFor(m => m.RequiredDate)</th>  
+                <th>異動</th>              
             </tr>
         </thead>
         <tbody>
@@ -39,7 +37,11 @@
                     <td style="display:none">@Html.DisplayFor(x => m.EmployeeID)</td>
                     <td>@Html.DisplayFor(x => m.EmployeeName)</td>
                     <td>@Html.DisplayFor(x => m.OrderDate)</td>
-                    <td>@Html.DisplayFor(x => m.RequiredDate)</td>                    
+                    <td>@Html.DisplayFor(x => m.RequiredDate)</td>      
+                    <td>
+                        @Html.ActionLink("編輯","Edit",new { OrderID = m.OrderID, CustomerID = m.CustomerID, EmployeeID  = m.EmployeeID , OrderDate  = m.OrderDate , RequiredDate  = m.RequiredDate }, htmlAttributes: new { @class = "btn btn-primary"})
+                        @Html.ActionLink("刪除", "Delete", new { id = m.OrderID }, htmlAttributes: new { @class = "btn btn-danger" })
+                    </td>              
                 </tr>
             }
 
